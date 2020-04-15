@@ -11,7 +11,10 @@
 #include <iostream>
 #include <fstream>
 #include <cstddef>       // for std::size_t
+
+#ifndef NO_BOOST
 #include <boost/crc.hpp> // CRC Checking via Boost library.
+#endif
 
 #include "stdint.hpp"
 #include "romloader.hpp"
@@ -73,6 +76,8 @@ int RomLoader::load(const char* filename, const int offset, const int length, co
     char* buffer = new char[length];
     src.read(buffer, length);
 
+#ifndef NO_BOOST
+
     // Check CRC on file
     boost::crc_32_type result;
     result.process_bytes(buffer, (size_t) src.gcount());
@@ -82,6 +87,8 @@ int RomLoader::load(const char* filename, const int offset, const int length, co
         std::cout << std::hex << 
             filename << " has incorrect checksum.\nExpected: " << expected_crc << " Found: " << result.checksum() << std::endl;
     }
+
+#endif
 
     // Interleave file as necessary
     for (int i = 0; i < length; i++)

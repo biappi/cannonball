@@ -264,7 +264,9 @@ static void main_loop()
     quit_func(0);
 }
 
-int main(int argc, char* argv[])
+extern "C" { int SDL_main(int argc, char* argv[]); }
+
+int SDL_main(int argc, char* argv[])
 {
     // Initialize timer and video systems
     if( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) == -1 ) 

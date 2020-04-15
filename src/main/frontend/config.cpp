@@ -8,9 +8,14 @@
     See license.txt for more details.
 ***************************************************************************/
 
+#ifndef NO_BOOST
+
 // see: http://www.boost.org/doc/libs/1_52_0/doc/html/boost_propertytree/tutorial.html
 #include <boost/property_tree/ptree.hpp>
 #include <boost/property_tree/xml_parser.hpp>
+
+#endif
+
 #include <iostream>
 
 #include "main.hpp"
@@ -22,12 +27,16 @@
 #include "engine/ohiscore.hpp"
 #include "engine/audio/osoundint.hpp"
 
+#ifndef NO_BOOST
+
 // api change in boost 1.56
 #include <boost/version.hpp>
 #if (BOOST_VERSION >= 105600)
 typedef boost::property_tree::xml_writer_settings<std::string> xml_writer_settings;
 #else
 typedef boost::property_tree::xml_writer_settings<char> xml_writer_settings;
+#endif
+
 #endif
 
 Config config;
@@ -47,11 +56,30 @@ void Config::init()
 
 }
 
+#ifndef NO_BOOST
+
 using boost::property_tree::ptree;
+
+#else
+
+struct ptree {
+
+    template<typename string, typename out>
+    out get(string name, out def) {
+        return def;
+    }
+
+};
+
+#endif
+
 ptree pt_config;
+
 
 void Config::load(const std::string &filename)
 {
+    #ifndef NO_BOOST
+
     // Load XML file and put its contents in property tree. 
     // No namespace qualification is needed, because of Koenig 
     // lookup on the second argument. If reading fails, exception
@@ -64,6 +92,8 @@ void Config::load(const std::string &filename)
     {
         std::cout << "Error: " << e.what() << "\n";
     }
+
+    #endif
 
     // ------------------------------------------------------------------------
     // Menu Settings
@@ -192,6 +222,9 @@ void Config::load(const std::string &filename)
 
 bool Config::save(const std::string &filename)
 {
+
+#ifndef NO_BOOST
+
     // Save stuff
     pt_config.put("video.mode",               video.mode);
     pt_config.put("video.window.scale",       video.scale);
@@ -254,6 +287,9 @@ bool Config::save(const std::string &filename)
         std::cout << "Error saving config: " << e.what() << "\n";
         return false;
     }
+
+#endif
+
     return true;
 }
 
@@ -261,6 +297,8 @@ void Config::load_scores(const std::string &filename)
 {
     // Create empty property tree object
     ptree pt;
+
+#ifndef NO_BOOST
 
     try
     {
@@ -271,6 +309,8 @@ void Config::load_scores(const std::string &filename)
         e.what();
         return;
     }
+
+#endif
     
     // Game Scores
     for (int i = 0; i < ohiscore.NO_SCORES; i++)
@@ -295,6 +335,8 @@ void Config::load_scores(const std::string &filename)
 
 void Config::save_scores(const std::string &filename)
 {
+#ifndef NO_BOOST
+
     // Create empty property tree object
     ptree pt;
         
@@ -321,6 +363,8 @@ void Config::save_scores(const std::string &filename)
     {
         std::cout << "Error saving hiscores: " << e.what() << "\n";
     }
+
+#endif
 }
 
 void Config::load_tiletrial_scores()
@@ -332,6 +376,8 @@ void Config::load_tiletrial_scores()
 
     // Create empty property tree object
     ptree pt;
+
+#ifndef NO_BOOST
 
     try
     {
@@ -346,6 +392,8 @@ void Config::load_tiletrial_scores()
         return;
     }
 
+#endif
+
     // Time Trial Scores
     for (int i = 0; i < 15; i++)
     {
@@ -355,6 +403,8 @@ void Config::load_tiletrial_scores()
 
 void Config::save_tiletrial_scores()
 {
+#ifndef NO_BOOST
+
     const std::string filename = FILENAME_TTRIAL;
 
     // Create empty property tree object
@@ -374,6 +424,7 @@ void Config::save_tiletrial_scores()
     {
         std::cout << "Error saving hiscores: " << e.what() << "\n";
     }
+#endif
 }
 
 bool Config::clear_scores()

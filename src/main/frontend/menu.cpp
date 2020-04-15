@@ -6,8 +6,16 @@
     See license.txt for more details.
 ***************************************************************************/
 
+#ifndef NO_BOOST
+
 // Boost string prediction
 #include <boost/algorithm/string/predicate.hpp>
+
+#else
+
+#include <string>
+
+#endif
 
 #include "main.hpp"
 #include "menu.hpp"
@@ -433,7 +441,19 @@ void Menu::draw_text(std::string s)
     ohud.blit_text_new(x, y, s.c_str(), ohud.GREEN);
 }
 
+#ifndef NO_BOOST
+
 #define SELECTED(string) boost::starts_with(OPTION, string)
+
+#else
+
+static bool selected(const char *input, const char *test) {
+    return strncmp(test, input, strlen(test)) == 0;
+}
+
+#define SELECTED(string) selected(OPTION, string)
+
+#endif
 
 void Menu::tick_menu()
 {
