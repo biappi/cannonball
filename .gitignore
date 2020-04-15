@@ -262,3 +262,10 @@ pip-log.txt
 
 # Mac crap
 .DS_Store
+
+# PSP
+EBOOT.PBP
+PARAM.SFO
+cannonball.elf
+*.o
+
