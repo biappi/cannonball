@@ -148,6 +148,8 @@ bool RenderSW::init(int src_width, int src_height,
         return false;
     }
 
+    SDL_FillRect(surface, NULL, 0x00000000);
+
     // Convert the SDL pixel surface to 32 bit.
     // This is potentially a larger surface area than the internal pixel array.
     screen_pixels = (uint32_t*)surface->pixels;
@@ -159,6 +161,9 @@ bool RenderSW::init(int src_width, int src_height,
     Rmask  = surface->format->Rmask;
     Gmask  = surface->format->Gmask;
     Bmask  = surface->format->Bmask;
+
+
+    memset(surface->pixels, 0, surface->h * surface->pitch);
 
     // Doubled intermediate pixel array for scanlines
     if (scanlines)
