@@ -38,11 +38,10 @@ bool RenderSW::init(int src_width, int src_height,
     this->video_mode = video_mode;
     this->scanlines  = scanlines;
 
+#if 0
     // Setup SDL Screen size
     if (!RenderBase::sdl_screen_size())
         return false;
-
-    int flags = SDL_FLAGS;
 
     // --------------------------------------------------------------------------------------------
     // Full Screen Mode
@@ -121,6 +120,15 @@ bool RenderSW::init(int src_width, int src_height,
         screen_yoff = 0;
     }
 
+#endif
+
+
+    scn_width = 480;
+    scn_height = 272;
+    video_mode = video_settings_t::MODE_FULL;
+
+    int flags = SDL_SWSURFACE | SDL_FULLSCREEN ;
+
     //int bpp = info->vfmt->BitsPerPixel;
     const int bpp = 32;
     const int available = SDL_VideoModeOK(scn_width, scn_height, bpp, flags);
@@ -131,6 +139,8 @@ bool RenderSW::init(int src_width, int src_height,
 
     // Set the video mode
     surface = SDL_SetVideoMode(scn_width, scn_height, bpp, flags);
+
+    printf("setting video mode %d %d %d %d\n", scn_width, scn_height, bpp, flags);
 
     if (!surface || !available)
     {
@@ -186,6 +196,22 @@ bool RenderSW::finalize_frame()
 
 void RenderSW::draw_frame(uint16_t* pixels)
 {
+    const int mid_x = (scn_width  - src_width) / 2;
+    const int mid_y = (scn_height - src_height) / 2;
+    
+    const int p = surface->pitch / sizeof(uint32_t);
+
+    for (int y = 0; y < src_height; y++) {
+        for (int x = 0; x < src_width; x++) {
+            uint16_t col_pal = pixels[x + y * src_width];
+            uint32_t col_rgb = rgb[col_pal & ((S16_PALETTE_ENTRIES * 3) - 1)];
+
+            screen_pixels[mid_x + x + (mid_y + y) * p] = col_rgb;
+        }
+    }
+
+    return;
+
     // Do Scaling
     if (scale_factor != 1)
     {
