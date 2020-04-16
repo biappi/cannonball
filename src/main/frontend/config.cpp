@@ -107,10 +107,10 @@ void Config::load(const std::string &filename)
     // ------------------------------------------------------------------------
    
     video.mode       = pt_config.get("video.mode",               0); // Video Mode: Default is Windowed 
-    video.scale      = pt_config.get("video.window.scale",       2); // Video Scale: Default is 2x    
+    video.scale      = pt_config.get("video.window.scale",       1); // Video Scale: Default is 2x    
     video.scanlines  = pt_config.get("video.scanlines",          0); // Scanlines
     video.fps        = pt_config.get("video.fps",                2); // Default is 60 fps
-    video.fps_count  = pt_config.get("video.fps_counter",        0); // FPS Counter
+    video.fps_count  = pt_config.get("video.fps_counter",        1); // FPS Counter
     video.widescreen = pt_config.get("video.widescreen",         1); // Enable Widescreen Mode
     video.hires      = pt_config.get("video.hires",              0); // Hi-Resolution Mode
     video.filtering  = pt_config.get("video.filtering",          0); // Open GL Filtering Mode
@@ -120,7 +120,7 @@ void Config::load(const std::string &filename)
     // ------------------------------------------------------------------------
     // Sound Settings
     // ------------------------------------------------------------------------
-    sound.enabled     = pt_config.get("sound.enable",      1);
+    sound.enabled     = pt_config.get("sound.enable",      0);
     sound.advertise   = pt_config.get("sound.advertise",   1);
     sound.preview     = pt_config.get("sound.preview",     1);
     sound.fix_samples = pt_config.get("sound.fix_samples", 1);
