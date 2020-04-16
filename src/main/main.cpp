@@ -47,6 +47,13 @@
 // Fine to include on non-windows builds as dummy functions used.
 #include "directx/ffeedback.hpp"
 
+#include <pspsdk.h>
+#include <psppower.h>
+#include <pspdebug.h>
+#include <pspdisplay.h>
+#include <psprtc.h>
+
+
 // Initialize Shared Variables
 using namespace cannonball;
 
@@ -268,6 +275,8 @@ extern "C" { int SDL_main(int argc, char* argv[]); }
 
 int SDL_main(int argc, char* argv[])
 {
+    scePowerSetClockFrequency(333, 333, 166);
+
     // Initialize timer and video systems
     if( SDL_Init( SDL_INIT_TIMER | SDL_INIT_VIDEO | SDL_INIT_JOYSTICK) == -1 ) 
     { 
